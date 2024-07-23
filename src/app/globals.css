@@ -105,3 +105,53 @@ a {
     color-scheme: dark;
   }
 }
+
+
+/* Layout classes */
+.page {
+  display: flex;
+}
+.left-panel {
+  height: 100vh;
+  width: 300px;
+  background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+}
+.right-panel {
+  flex: auto;
+}
+.logo {
+  height: 50px;
+  background-image: url("https://raw.githubusercontent.com/dasingh9/my-portal/main/images/logo.png");
+}
+.left-menu {
+  font-size: large;
+  font-family: sans-serif;
+  margin: 20px;
+}
+.menu-item {
+  padding: 10px;
+}
+.menu-item > a {
+  color: white;
+  text-decoration: none;
+}
+
+.menu-item > a:hover {
+  text-decoration: underline;
+}
+
+.top-menu-bar {
+  height: 60px;
+  background-color: #eceaf1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.top-menu-bar > a {
+  text-decoration: none;
+  margin: 20px;
+  font-family: sans-serif;
+}
+.content {
+  padding: 10px;
+}
