@@ -1,5 +1,8 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import LeftMenu from "../components/LeftMenu";
+import TopMenu from "../components/TopMenu";
+import Logo from "../components/Logo";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,27 +15,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <div class="page">
-          <div class="left-panel">
-            <div class="logo">The Leaders</div>
-            <div class="left-menu">
-              <div class="menu-item">
-                <a href="/">Home</a>
-              </div>
-              <div class="menu-item"><a href="./clock-js">Clock</a></div>
-              <div class="menu-item"><a href="./games-html-css">Games</a></div>
-              <div class="menu-item"><a href="./users">Fetch Users</a></div>
-              <div class="menu-item"><a href="./css-demo">CSS Demo</a></div>
-            </div>
+        <div className="page">
+          <div className="left-panel">
+            <Logo />
+            <LeftMenu />
           </div>
-          <div class="right-panel">
-            <div class="top-menu-bar">
-              <a href="/">Home</a>
-              <a href="/">Contact us</a>
-              <a href="/">More...</a>
-              <a href="/logout.html">Logout</a>
-            </div>
-            <div class="content">
+          <div className="right-panel">
+            <TopMenu />
+            <div className="content">
               {children}
             </div>
           </div>

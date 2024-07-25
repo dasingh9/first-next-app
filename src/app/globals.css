@@ -128,6 +128,7 @@ a {
   font-family: sans-serif;
   margin: 20px;
 }
+
 .menu-item {
   padding: 10px;
 }
@@ -136,7 +137,13 @@ a {
   text-decoration: none;
 }
 
+
+
 .menu-item > a:hover {
+  text-decoration: underline;
+}
+
+.menu-item > .active {
   text-decoration: underline;
 }
 
@@ -155,3 +162,7 @@ a {
 .content {
   padding: 10px;
 }
+
+/*.active {
+  text-decoration: underline!important;
+}*/

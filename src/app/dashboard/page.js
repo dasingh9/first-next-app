@@ -1,5 +1,9 @@
 async function getGames() {
-    const response = await fetch("https://games-api-orpin.vercel.app/api/games");
+    const baseUrl = "http://localhost:3000";
+  
+    const response = await fetch(baseUrl + "/api/games", {
+      'cache' : 'no-cache'
+    });
     const gamesArray = await response.json();
     return gamesArray;
 }
