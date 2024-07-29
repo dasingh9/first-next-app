@@ -3,6 +3,7 @@
 import type { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { Just_Me_Again_Down_Here } from "next/font/google";
 
 export const options = {
     providers: [
@@ -39,6 +40,19 @@ export const options = {
             }
         })
     ],
+    callbacks: {
+        async jwt({token, user, trigger, session}) {
+            if(user?.email === "dav@example.com") {
+                token.role = 'admin';
+            }
+            return token;
+        },
+        async session({session, token}) {
+            if(token?.role)
+                session.user.role = token.role;
+            return session;
+        }
+    }
     /*pages: {
         signIn: "auth/Sign"
     }*/

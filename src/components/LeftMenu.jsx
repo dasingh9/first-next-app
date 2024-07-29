@@ -10,6 +10,7 @@ export default function LeftMenu() {
             <div className="menu-item"><Link href="/">Home</Link></div>
             <div className="menu-item"><Link href="./dashboard" className={path.startsWith('/dashboard') ? 'active' : null}>Dashboard</Link></div>
             <div className="menu-item"><Link href="./about" className={path.startsWith('/about') ? 'active' : null}>About</Link></div>
+            <div className="menu-item"><Link href="./profile" className={path.startsWith('/profile') ? 'active' : null}>Profile</Link></div>
         </div>
     )
 }
