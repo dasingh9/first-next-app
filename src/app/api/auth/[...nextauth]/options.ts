@@ -25,9 +25,19 @@ export const options = {
             async authorize(credentials, req) {
                 // Add logic here to look up the user from the credentials supplied
                 const user = { id: "1", name: "Davinder", email: "dav@example.com", password: "pass123" }
+
                 console.log("Authentictaed for ", req);
                 const username = req.body.username;
                 const password = req.body.password;
+
+                /*const user  = await userService.getUser(username, password); // Amazon Cognito, Auth0
+
+                if(user)
+                    return user;
+                else
+                    return null;*/
+
+
                 if (user?.email == username && user?.password==password) {
                     // Any object returned will be saved in `user` property of the JWT
                     return user

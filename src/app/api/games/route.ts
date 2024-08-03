@@ -22,7 +22,7 @@ let games = [
 export function GET() {
     //make a connection to DB
     console.log("Request received");
-    return ResponseBuilder.successResponse(games);
+    return ResponseBuilder.success(games);
 }
 
 export async function POST(req: Request) {
@@ -42,5 +42,5 @@ export async function POST(req: Request) {
 
     games.push(game);
 
-    return ResponseBuilder.successResponse({ 'message': 'created' });
+    return ResponseBuilder.success({ 'message': 'created' });
 }
