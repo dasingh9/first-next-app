@@ -166,3 +166,7 @@ a {
 /*.active {
   text-decoration: underline!important;
 }*/
+
+.error {
+  color:"red";
+}

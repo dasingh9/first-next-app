@@ -1,45 +1,55 @@
+import {FetchGamesError, FetchGenresError} from "../../lib/errors/custom-errors";
+import GamesTable from "../../components/GamesTable";
+
 async function getGames() {
   const baseUrl = "http://localhost:3000";
 
-  const response = await fetch(baseUrl + "/api/games", {
-    'cache': 'no-cache'
-  });
-  const gamesArray = await response.json();
-  return gamesArray;
+  try {
+    const response = await fetch(baseUrl + "/api/games", {
+      'cache': 'no-cache'
+    });
+    const gamesArray = await response.json();
+    return gamesArray;
+  }
+  catch (error) {
+    throw new FetchGamesError("Unable to fetch games");
+  }
+
+}
+
+async function getGenres() {
+  //make API call
+  throw new FetchGenresError("Unable to get Genres list");
+  return ["Shooter", "Novel", "Other"];
 }
 
 export default async function Dashboard() {
 
-  const games = await getGames();
+  let gamesJSX;
+  let genresJSX;
+
+  try {
+    const games = await getGames();
+    gamesJSX = <GamesTable games={games}></GamesTable>;
+  }
+  catch(error) {
+    gamesJSX = <span style={{color:"red"}}>Unable to load Games list</span>
+  }
+
+  try {
+    const genres = await getGenres();
+    genresJSX = <select>
+        {genres.map(genre => (<option value={genre}>{genre}</option>))}
+      </select>;
+  }
+  catch(error) {
+    genresJSX = <span style={{color:"red"}}>Unable to load Genres list</span>
+  }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Thumbnail</th>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Genre</th>
-          <th>Platform</th>
-          <th>Publisher</th>
-          <th>Developer</th>
-          <th>Release Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {games.map((game) => (
-          <tr key={game.id}>
-            <td><img src={game.thumbnail} alt={game.title} width="100" /></td>
-            <td>{game.id}</td>
-            <td>{game.title}</td>
-            <td>{game.genre}</td>
-            <td>{game.platform}</td>
-            <td>{game.publisher}</td>
-            <td>{game.developer}</td>
-            <td>{game.release_date}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+    <>
+      {genresJSX}
+      {gamesJSX}
+    </>
+  )
 }
