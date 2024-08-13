@@ -39,7 +39,7 @@ export default async function Dashboard() {
   try {
     const genres = await getGenres();
     genresJSX = <select>
-        {genres.map(genre => (<option value={genre}>{genre}</option>))}
+        {genres.map(genre => (<option key={genre} value={genre}>{genre}</option>))}
       </select>;
   }
   catch(error) {
