@@ -13,3 +13,11 @@ export class FetchGenresError extends Error {
         this.errorCode = "FETCH_GENRES_ERROR";
     }
 }
+
+export class ValidationError extends Error {
+    constructor(message, errorName="ValidationError", errorCode = "400") {
+        super(message);
+        this.name = errorName;
+        this.errorCode = errorCode;
+    }
+}

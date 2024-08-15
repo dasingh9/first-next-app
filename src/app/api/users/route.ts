@@ -6,11 +6,8 @@ import dbConnect from "../../../lib/dbConnect";
 import User from "../../../lib/models/user";
 
 export async function GET() {
-    console.log("Request received");
-
     try {
-        //make a connection to DB
-        const mongoose = await dbConnect();
+        await dbConnect();
         const users = await User.find({});
         return ResponseBuilder.success(users);
     }
@@ -19,24 +16,37 @@ export async function GET() {
     }
 }
 
-/*
 export async function POST(req: Request) {
-    //make a connection to DB
-    let body;
+
+    let userPayload = null;
+    //validate user payload
     try {
-       body = await req.json();
+        userPayload = await req.json();
+        validateUserPayload(userPayload);
     }
     catch(error) {
-        return ResponseBuilder.badRequest("Invalid JSON payload for game");
-    }
-    const game = body;
-
-    if (!game.id || !game.title) {
-        return ResponseBuilder.badRequest("Invalid game data");
+        console.log(`Failed to create user. ERROR: ${error}`);
+        return ResponseBuilder.badRequest(error.message);
     }
 
-    games.push(game);
-
-    return ResponseBuilder.success({ 'message': 'created' });
+    //create user
+    try {
+        await dbConnect();
+        const user = await new User(userPayload).save();
+        console.log(`_id:${user._id} - User created successfully`);
+        return ResponseBuilder.success(user);
+    }
+    catch(error) {
+        console.log(`Failed to create user. ERROR: ${error}`);
+        return ResponseBuilder.internalServerError(error.message);
+    }
 }
-*/
+
+// Function to validate the payload using the schema
+function validateUserPayload(userPayload) {
+    const tempUser = new User(userPayload);
+    const error:any = tempUser.validateSync(); // Synchronous validation
+    if (error) {
+        throw new Error(Object.values(error.errors).map((err:any) => err.message).join(', '));
+    }
+}
