@@ -5,24 +5,50 @@
 //export const config = { matcher: ["/dashboard"] }
 
 import { withAuth } from 'next-auth/middleware';
-import { NextResponse } from 'next/server';
+
+const pathsRequiringAuthentication = ['/dashboard', '/about', '/profile'];
+const adminGroupPaths = ['/users', '/dashboard'];
+const standardGroupPaths = ['/profile'];
 
 export default withAuth({
   callbacks: {
     authorized: async ({ req, token }) => {
       console.log('Middleware running for path:', req.nextUrl.pathname);
-      if (req.nextUrl.pathname === "/dashboard") {
-        return token?.role === "admin";
+
+      //TEMP block start: temporary by passed authentication for /api paths, but this block to be removed before the deployment
+      if (req.nextUrl.pathname.startsWith("/api")) {
+        return true;
       }
+      //TEMP block end
+
+      //Admin Only Path accessible to users in `admin` group only
+      if (adminGroupPaths.includes(req.nextUrl.pathname)) {
+        const allowAdminAccess = token?.group === "admin";
+        const message = `Authorized: ${allowAdminAccess} - Path '${req.nextUrl.pathname}' is accessible to users in 'admin' group only`;
+        console.info(message);
+        return allowAdminAccess;
+      }
+
+      //Standard Paths accessible to users in `standard` and `admin` groups only
+      if (standardGroupPaths.includes(req.nextUrl.pathname)) {
+        const allowStandardAccess = token?.group === "admin" || token?.group === "standard";
+        const message = `Authorized: ${allowStandardAccess} - Path '${req.nextUrl.pathname}' is accessible to users in 'admin' or 'standard' group only`;
+        console.info(message);
+        return allowStandardAccess;
+      }
+
+      //other protected pages accessible to all authenticated users (irrespective of their group)
       if (Boolean(token)) {
-        console.log('Token found, allowing access');
-        console.log(`Token:${JSON.stringify(token)}`);
+        const message = `Authorized: true - Path '${req.nextUrl.pathname}' is accessible to all authenticated users (irrespective of their group)`;
+        console.info(message);
+        return true;
       } else {
-        console.log('No token, redirecting to login');
+        console.error('Authorized: false - No token, redirecting to login');
+        return false;
       }
-      return Boolean(token);
+
     }
   }
 });
 
-export const config = { matcher: ['/dashboard', '/about', '/profile'] };
+export const config = { matcher: pathsRequiringAuthentication };
