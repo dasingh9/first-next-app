@@ -1,6 +1,6 @@
 //options.ts
-
 import type { NextAuthOptions } from "next-auth";
+import { User as NextAuthUser } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import Auth0Provider from "next-auth/providers/auth0";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -8,6 +8,10 @@ import { Just_Me_Again_Down_Here } from "next/font/google";
 
 import dbConnect from "../../../../lib/dbConnect";
 import User from "../../../../lib/models/user";
+
+export interface AuthUser extends NextAuthUser {
+    group?: string | null;
+}
 
 
 export const options = {
@@ -32,22 +36,26 @@ export const options = {
                 username: { label: "Username", type: "text", placeholder: "your email" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials, req) {
+            async authorize(credentials:any, req:any): Promise<AuthUser> {
                 // Add logic here to look up the user from the credentials supplied
                 //const user = { id: "1", name: "Davinder", email: "dav@example.com", password: "pass123" }
 
-                console.log("Authentictaed for ", req);
+                console.log("Authenticated for ", req.username);
                 const username = req.body.username;
                 const password = req.body.password;
 
                 try {
                     const user = await getUserByEmailAndPassword(username, password);
-                    if(user)
-                        return {
+                    if(user) {
+                        const authUser:AuthUser = {
+                            "id": user.emailId,
                             "name": `${user.firstName} ${user.lastName}`,
                             "email": user.emailId,
-                            "role": "admin"
+                            "group": user.group
                         };
+                        console.log(`*********** user got from database - email:${authUser.email}, group:${authUser.group}`);
+                        return authUser;
+                    }
                     else
                         return null;
                 }
@@ -69,16 +77,15 @@ export const options = {
         })
     ],
     callbacks: {
-        async jwt({ token, user, trigger, session }) {
-            token.role = user?.role;
-            if (user?.email === "dav@example.com") {
-                token.role = 'admin';
-            }
+        async jwt({ token, user, trigger, session }: { token:any, user:any, trigger?:any, session?:any }) {
+            console.log(`*********** Inside callbacks > jwt`);
+            token.group = user?.group;
             return token;
         },
         async session({ session, token }) {
-            if (token?.role)
-                session.user.role = token.role;
+            console.log(`*********** Inside callbacks > session`);
+            if (token?.group)
+                session.user.group = token.group;
             return session;
         }
     }
